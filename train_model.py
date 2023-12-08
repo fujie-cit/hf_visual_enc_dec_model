@@ -1,12 +1,13 @@
 # %%
-from transformers import ViTImageProcessor, BertJapaneseTokenizer, VisionEncoderDecoderModel
+from transformers import ViTImageProcessor, AutoTokenizer, VisionEncoderDecoderModel
 from PIL import Image
 import datasets
 import os
 
 # %%
 image_processor = ViTImageProcessor.from_pretrained("google/vit-base-patch16-224-in21k")
-tokenizer = BertJapaneseTokenizer.from_pretrained("cl-tohoku/bert-base-japanese-whole-word-masking")
+tokenizer = AutoTokenizer.from_pretrained("rinna/japanese-gpt2-medium", use_fast=False)
+tokenizer.do_lower_case = True  # due to some bug of tokenizer config loading
 
 # %%
 def convert_to_features(example_batch):
@@ -39,7 +40,8 @@ dataset_dict.set_transform(convert_to_features)
 
 # %%
 model = VisionEncoderDecoderModel.from_encoder_decoder_pretrained(
-    "google/vit-base-patch16-224-in21k", "cl-tohoku/bert-base-japanese-whole-word-masking"
+    "google/vit-base-patch16-224-in21k", 
+    "rinna/japanese-gpt2-medium",
 )
 
 model.config.decoder_start_token_id = tokenizer.cls_token_id
@@ -50,7 +52,7 @@ model.config.pad_token_id = tokenizer.pad_token_id
 from transformers import Trainer, TrainingArguments
 
 training_args = TrainingArguments(
-    output_dir="./models/vit-bert-japanese-image-captioning_stair-captions",
+    output_dir="./models/vit-gpt2-japanese-image-captioning_stair-captions",
     num_train_epochs=5,
     per_device_train_batch_size=10, 
     per_device_eval_batch_size=1,   
