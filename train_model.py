@@ -54,7 +54,7 @@ from transformers import Trainer, TrainingArguments
 training_args = TrainingArguments(
     output_dir="./models/vit-gpt2-japanese-image-captioning_stair-captions",
     num_train_epochs=5,
-    per_device_train_batch_size=10, 
+    per_device_train_batch_size=2, 
     per_device_eval_batch_size=1,   
     warmup_steps=500,               
     weight_decay=0.01,              
