@@ -1,3 +1,6 @@
 models/
 stair_captions_dataset/
 photos/*
+tuchiya/images/*
+tuchiya/dataset/
+
